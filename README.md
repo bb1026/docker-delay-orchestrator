@@ -39,13 +39,3 @@
 - Linux / 飞牛 NAS / PVE 虚拟机 均可
 
 ---
-
-## 🌐 访问地址
-
-``text
-http://NAS-IP:7764
-
-📦 安装方式一（推荐）：docker-compose.yml
-1️⃣ 下载项目
-git clone https://github.com/bb1026/docker-delay-orchestrator.git
-cd docker-delay-orchestrator
