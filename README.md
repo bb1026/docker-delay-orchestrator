@@ -42,7 +42,7 @@
 
 ## 🌐 访问地址
 
-text
+``text
 http://NAS-IP:7764
 
 📦 安装方式一（推荐）：docker-compose.yml
