@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Docker 延迟启动</title>
+<style>
+body { font-family: sans-serif; background:#111; color:#eee; margin:0 }
+.card { background:#222; margin:10px; padding:12px; border-radius:8px }
+button { padding:8px 12px; font-size:16px }
+input { width:60px }
+</style>
+</head>
+<body>
+
+<h2 style="padding:10px">Docker 延迟启动</h2>
+<div id="list"></div>
+<button onclick="start()">▶ 启动</button>
+<pre id="log"></pre>
+
+<script>
+async function load() {
+  let c = await fetch('/api/containers').then(r=>r.json())
+  let s = await fetch('/api/state').then(r=>r.json())
+  let el = document.getElementById('list')
+  el.innerHTML=''
+  c.forEach(x=>{
+    let st = s[x.name] || {enabled:false,delay:10,depends:[]}
+    el.innerHTML+=`
+    <div class="card">
+      <b>${x.name}</b><br>
+      Docker自启：${x.restart}<br>
+      延迟 <input value="${st.delay}" onchange="set('${x.name}',this.value)"> 秒
+      <input type="checkbox" ${st.enabled?'checked':''} onchange="toggle('${x.name}',this.checked)"> 托管
+    </div>`
+  })
+}
+
+let state={}
+function toggle(n,v){state[n]=state[n]||{};state[n].enabled=v;save()}
+function set(n,v){state[n]=state[n]||{};state[n].delay=parseInt(v);save()}
+async function save(){await fetch('/api/state',{method:'POST',body:JSON.stringify(state)})}
+
+async function start(){
+ let r=await fetch('/api/start',{method:'POST'}).then(r=>r.json())
+ document.getElementById('log').textContent=r.join("\n")
+}
+
+load()
+</script>
+</body>
+</html>
